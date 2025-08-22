@@ -1,3 +1,810 @@
-<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>PolyCore - Plataforma Completa de Aprendizaje de Ingl�s</title><script src="https://cdn.tailwindcss.com"></script><script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"><script src="https://www.youtube.com/iframe_api"></script></head><body class="bg-white">
-<nav class="bg-white/90 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-50"><div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"><div class="flex justify-between items-center h-16"><div class="flex items-center"><div class="flex-shrink-0 flex items-center"><div class="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center mr-3"><span class="text-white font-bold text-lg"></span></div><span class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-500">PolyCore</span></div></div><div class="hidden md:block"><div class="ml-10 flex items-baseline space-x-8"><button onclick="showTab(\"home\")" class="text-gray-600 hover:text-blue-500 transition-colors">Inicio</button><button onclick="showTab(\"dashboard\")" class="text-gray-600 hover:text-blue-500 transition-colors">Dashboard</button><button onclick="showTab(\"youtube\")" class="text-gray-600 hover:text-blue-500 transition-colors">YouTube</button><button onclick="showTab(\"chat-ai\")" class="text-gray-600 hover:text-blue-500 transition-colors">Chat con IA</button><button onclick="showTab(\"login\")" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors">Iniciar Sesi�n</button><button onclick="showTab(\"signup\")" class="bg-purple-500 text-white px-6 py-2 rounded-lg hover:bg-purple-600 transition-all transform hover:scale-105 font-semibold">Prueba Gratis</button></div></div><div class="md:hidden"><button class="text-gray-600 hover:text-gray-900" onclick="toggleMobileMenu()"><i class="fas fa-bars text-xl"></i></button></div></div></div></nav>
-<div id="tabContainer" class="min-h-screen"><div id="home" class="tab-content active"><section class="py-20 bg-gradient-to-br from-blue-50 to-purple-50"><div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center"><h1 class="text-4xl font-bold text-gray-900 mb-4"> PolyCore</h1><p class="text-xl text-gray-600 mb-8">Plataforma Completa de Aprendizaje de Ingl�s</p><div class="grid grid-cols-1 md:grid-cols-3 gap-6"><div class="bg-white p-6 rounded-lg shadow-sm"><h3 class="text-lg font-semibold mb-2"> YouTube + Subt�tulos</h3><p class="text-gray-600">Aprende con videos reales</p></div><div class="bg-white p-6 rounded-lg shadow-sm"><h3 class="text-lg font-semibold mb-2"> Chat con IA</h3><p class="text-gray-600">Practica conversaci�n</p></div><div class="bg-white p-6 rounded-lg shadow-sm"><h3 class="text-lg font-semibold mb-2"> Dashboard</h3><p class="text-gray-600">Seguimiento de progreso</p></div></div></div></section></div>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PolyCore - Plataforma Completa de Aprendizaje de Inglés</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://www.youtube.com/iframe_api"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'quest-blue': '#3B82F6',
+                        'quest-blue-dark': '#2563EB',
+                        'quest-purple': '#8B5CF6',
+                        'quest-purple-dark': '#7C3AED',
+                        'quest-orange': '#F59E0B',
+                        'quest-green': '#10B981',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero-gradient {
+            background: linear-gradient(135deg, #EBF4FF 0%, #F3E8FF 50%, #FEF3C7 100%);
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #8B5CF6 0%, #3B82F6 50%, #06B6D4 100%);
+        }
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .floating {
+            animation: floating 3s ease-in-out infinite;
+        }
+        .fade-in {
+            animation: fadeInUp 0.8s ease-out forwards;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        .sentence-highlight {
+            background-color: #fef3c7;
+            transition: all 0.3s ease;
+        }
+        .word-hover:hover {
+            background-color: #fde68a;
+            cursor: pointer;
+        }
+        .current-word {
+            background-color: #3b82f6 !important;
+            color: white !important;
+            border-radius: 4px;
+            padding: 2px 4px;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            animation: pulse 1s infinite;
+        }
+        .current-sentence {
+            background-color: #eff6ff;
+            border-left: 4px solid #3b82f6;
+            transform: scale(1.02);
+        }
+        
+        @keyframes floating {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+        .form-input:focus {
+            transform: scale(1.02);
+        }
+        .btn-hover:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body class="bg-white">
+    <!-- Navigation -->
+    <nav class="bg-white/90 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center">
+                        <div class="w-8 h-8 bg-gradient-to-r from-quest-blue to-quest-purple rounded-lg flex items-center justify-center mr-3">
+                            <span class="text-white font-bold text-lg">🧠</span>
+                        </div>
+                        <span class="text-2xl font-bold gradient-text">PolyCore</span>
+                    </div>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-8">
+                        <button onclick="showTab('home')" class="text-gray-600 hover:text-quest-blue transition-colors">Inicio</button>
+                        <button onclick="showTab('dashboard')" class="text-gray-600 hover:text-quest-blue transition-colors">Dashboard</button>
+                        <button onclick="showTab('youtube')" class="text-gray-600 hover:text-quest-blue transition-colors">YouTube</button>
+                        <button onclick="showTab('chat-ai')" class="text-gray-600 hover:text-quest-blue transition-colors">Chat con IA</button>
+                        <button onclick="showTab('login')" class="bg-quest-blue text-white px-4 py-2 rounded-lg hover:bg-quest-blue-dark transition-colors">Iniciar Sesión</button>
+                        <button onclick="showTab('signup')" class="bg-quest-purple text-white px-6 py-2 rounded-lg hover:bg-quest-purple-dark transition-all transform hover:scale-105 font-semibold">
+                            Prueba Gratis
+                        </button>
+                    </div>
+                </div>
+                <div class="md:hidden">
+                    <button class="text-gray-600 hover:text-gray-900" onclick="toggleMobileMenu()">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div id="mobileMenu" class="hidden md:hidden bg-white border-b border-gray-200">
+        <div class="px-2 pt-2 pb-3 space-y-1">
+            <button onclick="showTab('home')" class="block w-full text-left px-3 py-2 text-gray-600 hover:text-quest-blue">Inicio</button>
+            <button onclick="showTab('dashboard')" class="block w-full text-left px-3 py-2 text-gray-600 hover:text-quest-blue">Dashboard</button>
+            <button onclick="showTab('youtube')" class="block w-full text-left px-3 py-2 text-gray-600 hover:text-quest-blue">YouTube</button>
+            <button onclick="showTab('chat-ai')" class="block w-full text-left px-3 py-2 text-gray-600 hover:text-quest-blue">Chat con IA</button>
+            <button onclick="showTab('login')" class="block w-full text-left px-3 py-2 text-gray-600 hover:text-quest-blue">Iniciar Sesión</button>
+            <button onclick="showTab('signup')" class="block w-full text-left px-3 py-2 text-gray-600 hover:text-quest-blue">Prueba Gratis</button>
+        </div>
+    </div>
+
+    <!-- Tab Content Container -->
+    <div id="tabContainer" class="min-h-screen">
+        <!-- HOME TAB -->
+        <div id="home" class="tab-content active">
+            <!-- Hero Section -->
+            <section class="hero-gradient py-20 lg:py-32">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="lg:grid lg:grid-cols-12 lg:gap-8 items-center">
+                        <div class="sm:text-center md:max-w-2xl md:mx-auto lg:col-span-6 lg:text-left">
+                            <h1 class="text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl">
+                                <span class="block">Aprende Inglés</span>
+                                <span class="block gradient-text">con YouTube</span>
+                            </h1>
+                            <p class="mt-3 text-base text-gray-500 sm:mt-5 sm:text-xl lg:text-lg xl:text-xl">
+                                Domina el inglés mientras ves tus videos favoritos. Subtítulos interactivos, traducciones instantáneas y ejercicios personalizados.
+                            </p>
+                            <div class="mt-8 sm:max-w-lg sm:mx-auto sm:text-center lg:text-left lg:mx-0">
+                                <button onclick="showTab('signup')" class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-quest-blue hover:bg-quest-blue-dark md:py-4 md:text-lg md:px-10">
+                                    Comenzar Gratis
+                                </button>
+                                <p class="mt-3 text-sm text-gray-500">14 días gratis • Sin tarjeta de crédito</p>
+                            </div>
+                        </div>
+                        <div class="mt-12 relative sm:max-w-lg sm:mx-auto lg:mt-0 lg:max-w-none lg:mx-0 lg:col-span-6 lg:flex lg:items-center">
+                            <div class="relative mx-auto w-full rounded-lg shadow-lg lg:max-w-md">
+                                <div class="relative block w-full bg-white rounded-lg overflow-hidden">
+                                    <div class="bg-gradient-to-r from-quest-blue to-quest-purple p-8 text-center">
+                                        <div class="floating">
+                                            <i class="fas fa-play-circle text-6xl text-white"></i>
+                                        </div>
+                                        <h3 class="mt-4 text-xl font-medium text-white">YouTube + Subtítulos</h3>
+                                        <p class="mt-2 text-blue-100">Aprende mientras te diviertes</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Features Section -->
+            <section id="features" class="py-16 bg-white">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="text-center">
+                        <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">
+                            ¿Por qué PolyCore?
+                        </h2>
+                        <p class="mt-4 text-lg text-gray-600">
+                            La plataforma más avanzada para aprender inglés con contenido real
+                        </p>
+                    </div>
+                    <div class="mt-16">
+                        <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+                            <div class="text-center">
+                                <div class="flex items-center justify-center h-12 w-12 rounded-md bg-quest-blue text-white mx-auto">
+                                    <i class="fas fa-closed-captioning text-xl"></i>
+                                </div>
+                                <h3 class="mt-6 text-lg font-medium text-gray-900">Subtítulos Inteligentes</h3>
+                                <p class="mt-2 text-base text-gray-500">
+                                    Subtítulos sincronizados con traducciones instantáneas y niveles de dificultad
+                                </p>
+                            </div>
+                            <div class="text-center">
+                                <div class="flex items-center justify-center h-12 w-12 rounded-md bg-quest-purple text-white mx-auto">
+                                    <i class="fas fa-brain text-xl"></i>
+                                </div>
+                                <h3 class="mt-6 text-lg font-medium text-gray-900">IA Personalizada</h3>
+                                <p class="mt-2 text-base text-gray-500">
+                                    Ejercicios y contenido adaptados a tu nivel y progreso de aprendizaje
+                                </p>
+                            </div>
+                            <div class="text-center">
+                                <div class="flex items-center justify-center h-12 w-12 rounded-md bg-quest-green text-white mx-auto">
+                                    <i class="fas fa-chart-line text-xl"></i>
+                                </div>
+                                <h3 class="mt-6 text-lg font-medium text-gray-900">Seguimiento de Progreso</h3>
+                                <p class="mt-2 text-base text-gray-500">
+                                    Monitorea tu evolución con estadísticas detalladas y logros
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- LOGIN TAB -->
+        <div id="login" class="tab-content min-h-screen gradient-bg flex items-center justify-center p-4">
+            <div class="bg-white rounded-3xl shadow-2xl p-8 w-full max-w-md transform transition-all duration-300 hover:scale-105">
+                <div class="text-center mb-8">
+                    <div class="bg-gradient-to-r from-purple-500 to-blue-500 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                        <i data-lucide="log-in" class="w-8 h-8 text-white"></i>
+                    </div>
+                    <div class="mb-3">
+                        <h1 class="text-3xl font-bold text-gray-800 mb-1">Iniciar Sesión</h1>
+                        <div class="text-sm font-medium gradient-text">INGLÉS DESDE CERO</div>
+                    </div>
+                    <p class="text-gray-600">Continúa tu aventura de aprendizaje</p>
+                </div>
+
+                <form id="loginForm" class="space-y-6">
+                    <div>
+                        <label for="loginEmail" class="block text-sm font-medium text-gray-700 mb-2">Correo electrónico</label>
+                        <div class="relative">
+                            <i data-lucide="mail" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5"></i>
+                            <input type="email" id="loginEmail" name="email" class="form-input w-full pl-10 pr-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-300 border-gray-300" placeholder="tu@email.com" required />
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="loginPassword" class="block text-sm font-medium text-gray-700 mb-2">Contraseña</label>
+                        <div class="relative">
+                            <i data-lucide="lock" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5"></i>
+                            <input type="password" id="loginPassword" name="password" class="form-input w-full pl-10 pr-12 py-3 border-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-300 border-gray-300" placeholder="Tu contraseña" required />
+                            <button type="button" id="toggleLoginPassword" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                                <i data-lucide="eye" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between">
+                        <label class="flex items-center">
+                            <input type="checkbox" class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded" />
+                            <span class="ml-2 text-sm text-gray-700">Recordarme</span>
+                        </label>
+                        <a href="#" class="text-sm text-purple-600 hover:text-purple-500">¿Olvidaste tu contraseña?</a>
+                    </div>
+
+                    <button type="submit" class="w-full bg-gradient-to-r from-purple-500 to-blue-500 text-white py-3 px-4 rounded-xl font-medium hover:from-purple-600 hover:to-blue-600 transition-all duration-300 btn-hover">
+                        Iniciar Sesión
+                    </button>
+
+                    <div class="text-center">
+                        <p class="text-sm text-gray-600">
+                            ¿No tienes cuenta? 
+                            <button type="button" onclick="showTab('signup')" class="text-purple-600 hover:text-purple-500 font-medium">Regístrate aquí</button>
+                        </p>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- SIGNUP TAB -->
+        <div id="signup" class="tab-content min-h-screen gradient-bg flex items-center justify-center p-4">
+            <div class="bg-white rounded-3xl shadow-2xl p-8 w-full max-w-md transform transition-all duration-300 hover:scale-105">
+                <div class="text-center mb-8">
+                    <div class="bg-gradient-to-r from-purple-500 to-blue-500 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                        <i data-lucide="user" class="w-8 h-8 text-white"></i>
+                    </div>
+                    <div class="mb-3">
+                        <h1 class="text-3xl font-bold text-gray-800 mb-1">Comienza tu Prueba Gratuita</h1>
+                        <div class="text-sm font-medium gradient-text">INGLÉS DESDE CERO</div>
+                    </div>
+                    <div class="bg-green-50 border border-green-200 rounded-xl p-3 mb-4">
+                        <p class="text-green-800 text-sm font-medium flex items-center justify-center">
+                            🎉 14 días completamente GRATIS • Sin tarjeta de crédito
+                        </p>
+                    </div>
+                    <p class="text-gray-600">Acceso completo a todas las funciones. Cancela cuando quieras.</p>
+                </div>
+
+                <form id="signupForm" class="space-y-6">
+                    <div>
+                        <label for="nombre" class="block text-sm font-medium text-gray-700 mb-2">Nombre completo</label>
+                        <div class="relative">
+                            <i data-lucide="user" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5"></i>
+                            <input type="text" id="nombre" name="nombre" class="form-input w-full pl-10 pr-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-300 border-gray-300" placeholder="Tu nombre completo" required />
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="signupEmail" class="block text-sm font-medium text-gray-700 mb-2">Correo electrónico</label>
+                        <div class="relative">
+                            <i data-lucide="mail" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5"></i>
+                            <input type="email" id="signupEmail" name="email" class="form-input w-full pl-10 pr-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-300 border-gray-300" placeholder="tu@email.com" required />
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="signupPassword" class="block text-sm font-medium text-gray-700 mb-2">Contraseña</label>
+                        <div class="relative">
+                            <i data-lucide="lock" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5"></i>
+                            <input type="password" id="signupPassword" name="password" class="form-input w-full pl-10 pr-12 py-3 border-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-300 border-gray-300" placeholder="Crea una contraseña segura" required />
+                            <button type="button" id="toggleSignupPassword" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                                <i data-lucide="eye" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                        <div id="passwordStrength" class="mt-2 h-2 bg-gray-200 rounded-full overflow-hidden">
+                            <div id="passwordStrengthBar" class="h-full transition-all duration-300" style="width: 0%"></div>
+                        </div>
+                        <p id="passwordStrengthText" class="mt-1 text-xs text-gray-500"></p>
+                    </div>
+
+                    <div class="flex items-center">
+                        <input type="checkbox" id="terms" name="terms" class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded" required />
+                        <label for="terms" class="ml-2 block text-sm text-gray-700">
+                            Acepto los <a href="#" class="text-purple-600 hover:text-purple-500">Términos y Condiciones</a> y la <a href="#" class="text-purple-600 hover:text-purple-500">Política de Privacidad</a>
+                        </label>
+                    </div>
+
+                    <button type="submit" class="w-full bg-gradient-to-r from-purple-500 to-blue-500 text-white py-3 px-4 rounded-xl font-medium hover:from-purple-600 hover:to-blue-600 transition-all duration-300 btn-hover">
+                        Comenzar Prueba Gratuita
+                    </button>
+
+                    <div class="text-center">
+                        <p class="text-sm text-gray-600">
+                            ¿Ya tienes cuenta? 
+                            <button type="button" onclick="showTab('login')" class="text-purple-600 hover:text-purple-500 font-medium">Inicia sesión aquí</button>
+                        </p>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- DASHBOARD TAB -->
+        <div id="dashboard" class="tab-content min-h-screen bg-gray-50 py-8">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <!-- Header del Dashboard -->
+                <div class="mb-8">
+                    <h1 class="text-3xl font-bold text-gray-900">¡Bienvenido de vuelta!</h1>
+                    <p class="text-gray-600">Continúa tu viaje de aprendizaje</p>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                    <div class="bg-white rounded-xl shadow-sm p-6">
+                        <div class="flex items-center">
+                            <div class="p-2 bg-blue-100 rounded-lg">
+                                <i class="fas fa-fire text-blue-600 text-xl"></i>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm font-medium text-gray-600">Racha</p>
+                                <p class="text-2xl font-bold text-gray-900">7 días</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-sm p-6">
+                        <div class="flex items-center">
+                            <div class="p-2 bg-green-100 rounded-lg">
+                                <i class="fas fa-star text-green-600 text-xl"></i>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm font-medium text-gray-600">XP Total</p>
+                                <p class="text-2xl font-bold text-gray-900">2,450</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-sm p-6">
+                        <div class="flex items-center">
+                            <div class="p-2 bg-purple-100 rounded-lg">
+                                <i class="fas fa-book text-purple-600 text-xl"></i>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm font-medium text-gray-600">Palabras Aprendidas</p>
+                                <p class="text-2xl font-bold text-gray-900">89</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-sm p-6">
+                        <div class="flex items-center">
+                            <div class="p-2 bg-orange-100 rounded-lg">
+                                <i class="fas fa-target text-orange-600 text-xl"></i>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm font-medium text-gray-600">Nivel</p>
+                                <p class="text-2xl font-bold text-gray-900">Intermedio</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                    <button onclick="showTab('youtube')" class="bg-white rounded-xl shadow-sm p-6 text-left hover:shadow-md transition-shadow">
+                        <div class="flex items-center mb-4">
+                            <div class="p-2 bg-red-100 rounded-lg">
+                                <i class="fab fa-youtube text-red-600 text-xl"></i>
+                            </div>
+                            <h3 class="ml-3 text-lg font-semibold text-gray-900">Ver Video</h3>
+                        </div>
+                        <p class="text-gray-600">Carga un video de YouTube y aprende con subtítulos interactivos</p>
+                    </button>
+                    
+                    <div class="bg-white rounded-xl shadow-sm p-6">
+                        <div class="flex items-center mb-4">
+                            <div class="p-2 bg-blue-100 rounded-lg">
+                                <i class="fas fa-comments text-blue-600 text-xl"></i>
+                            </div>
+                            <h3 class="ml-3 text-lg font-semibold text-gray-900">Chat con IA</h3>
+                        </div>
+                        <p class="text-gray-600">Practica conversación con nuestra IA inteligente</p>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl shadow-sm p-6">
+                        <div class="flex items-center mb-4">
+                            <div class="p-2 bg-green-100 rounded-lg">
+                                <i class="fas fa-tasks text-green-600 text-xl"></i>
+                            </div>
+                            <h3 class="ml-3 text-lg font-semibold text-gray-900">Ejercicios</h3>
+                        </div>
+                        <p class="text-gray-600">Completa ejercicios personalizados para tu nivel</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- YOUTUBE TAB -->
+        <div id="youtube" class="tab-content min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+            <!-- Header -->
+            <div class="bg-white shadow-sm border-b border-slate-200">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="flex items-center justify-between h-16">
+                        <div class="flex items-center space-x-4">
+                            <div class="flex items-center space-x-2">
+                                <i data-lucide="book-open" class="h-8 w-8 text-blue-600"></i>
+                                <h1 class="text-2xl font-bold text-slate-900">PolyCore</h1>
+                            </div>
+                            <div class="hidden md:flex text-sm text-slate-600">
+                                YouTube Language Learning Platform
+                            </div>
+                            <div class="text-xs text-slate-500">
+                                Powered by Real YouTube Subtitles
+                            </div>
+                        </div>
+                        
+                        <!-- User Stats -->
+                        <div class="flex items-center space-x-6">
+                            <div class="flex items-center space-x-2">
+                                <i data-lucide="trophy" class="h-5 w-5 text-yellow-500"></i>
+                                <span class="text-sm font-medium text-slate-700">XP: <span id="xp">0.00</span></span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <i data-lucide="zap" class="h-5 w-5 text-orange-500"></i>
+                                <span class="text-sm font-medium text-slate-700" id="streak">7</span> days
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <i data-lucide="target" class="h-5 w-5 text-blue-500"></i>
+                                <span class="text-sm font-medium text-slate-700" id="wordsLearned">89</span> words
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <i data-lucide="star" class="h-5 w-5 text-purple-500"></i>
+                                <span class="text-sm font-medium text-slate-700">Intermediate</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <!-- YouTube URL Input -->
+                <div class="mb-8">
+                    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                        <h2 class="text-lg font-semibold text-slate-900 mb-4 flex items-center">
+                            <i data-lucide="external-link" class="h-5 w-5 mr-2 text-blue-600"></i>
+                            🚀 Load Any YouTube Video
+                        </h2>
+                        <div class="flex space-x-3">
+                            <input
+                                type="url"
+                                id="videoUrl"
+                                placeholder="Paste YouTube URL here..."
+                                class="flex-1 px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                onkeypress="if(event.key==='Enter') loadVideo()"
+                            />
+                            <button
+                                onclick="loadVideo()"
+                                id="loadButton"
+                                class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium transition-colors"
+                            >
+                                Load Video
+                            </button>
+                        </div>
+                        <p class="text-sm text-slate-500 mt-2">
+                            Paste any YouTube URL and get interactive subtitles with translations
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Video Player and Subtitles -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- Video Player -->
+                    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                        <h3 class="text-lg font-semibold text-slate-900 mb-4">Video Player</h3>
+                        <div id="videoContainer" class="aspect-video bg-slate-100 rounded-lg flex items-center justify-center">
+                            <div class="text-center text-slate-500">
+                                <i data-lucide="play-circle" class="h-16 w-16 mx-auto mb-4"></i>
+                                <p>Enter a YouTube URL above to load video</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Subtitles Panel -->
+                    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                        <h3 class="text-lg font-semibold text-slate-900 mb-4">Interactive Subtitles</h3>
+                        <div id="subtitlesContainer" class="h-96 overflow-y-auto bg-slate-50 rounded-lg p-4">
+                            <div class="text-center text-slate-500">
+                                <i data-lucide="subtitles" class="h-12 w-12 mx-auto mb-2"></i>
+                                <p>Subtitles will appear here after loading a video</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CHAT AI TAB -->
+        <div id="chat-ai" class="tab-content min-h-screen bg-gradient-to-br from-purple-50 to-blue-50">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <div class="text-center mb-8">
+                    <h1 class="text-4xl font-bold text-gray-900 mb-4">��️ Chat con IA</h1>
+                    <p class="text-lg text-gray-600">Practica inglés conversando con nuestra IA inteligente</p>
+                </div>
+
+                <!-- API Configuration -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                        <i class="fas fa-key text-blue-600 mr-2"></i>
+                        Configuración de OpenAI
+                    </h3>
+                    <div class="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+                        <input
+                            type="password"
+                            id="apiKeyInput"
+                            placeholder="Ingresa tu API Key de OpenAI (sk-...)"
+                            class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                        <select id="modelSelect" class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="gpt-4o">GPT-4o</option>
+                            <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
+                        </select>
+                        <button id="saveApiBtn" class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-colors">
+                            Guardar
+                        </button>
+                    </div>
+                    <div id="apiStatus" class="mt-3 text-sm font-medium text-red-600">⚠️ API Key no configurada</div>
+                </div>
+
+                <!-- XP Display -->
+                <div class="bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-xl p-4 text-center mb-6">
+                    <div id="xpDisplay" class="text-2xl font-bold">🏆 XP: 0.00</div>
+                </div>
+
+                <!-- Controls -->
+                <div class="text-center mb-6">
+                    <div class="flex justify-center gap-4 mb-4">
+                        <button id="startConversationBtn" disabled class="bg-green-600 text-white px-8 py-3 rounded-xl font-medium hover:bg-green-700 transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed">
+                            Configura API Key primero
+                        </button>
+                        <button id="stopConversationBtn" class="bg-red-600 text-white px-8 py-3 rounded-xl font-medium hover:bg-red-700 transition-all transform hover:scale-105 hidden">
+                            Detener conversación 🛑
+                        </button>
+                    </div>
+                    <div id="status" class="text-lg font-medium text-gray-700">Configura tu API Key para comenzar</div>
+                </div>
+
+                <!-- Chat Container -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-semibold text-gray-900">💬 Conversación con IA</h3>
+                        <div class="flex items-center gap-3">
+                            <button id="voiceToggleBtn" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                                🔊 Voz Activada
+                            </button>
+                            <button id="clearChatBtn" class="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors">
+                                Limpiar Chat
+                            </button>
+                        </div>
+                    </div>
+                    <div id="voiceStatus" class="text-sm text-gray-600 mb-4">🎵 ChatGPT hablará automáticamente en inglés</div>
+                    <div id="chatMessages" class="h-96 overflow-y-auto bg-gray-50 rounded-lg p-4">
+                        <div class="text-center text-gray-500 italic">La conversación con ChatGPT aparecerá aquí...</div>
+                    </div>
+                </div>
+
+                <!-- Instructions -->
+                <div class="bg-blue-50 border border-blue-200 rounded-xl p-6 mt-6">
+                    <h3 class="text-lg font-semibold text-blue-900 mb-3">�� Instrucciones:</h3>
+                    <div class="text-blue-800 space-y-2">
+                        <p>1. <strong>Permite el acceso al micrófono</strong> cuando el navegador lo solicite</p>
+                        <p>2. Configura tu API Key de OpenAI arriba</p>
+                        <p>3. Haz clic en "Iniciar conversación"</p>
+                        <p>4. Habla tu pregunta o mensaje en inglés</p>
+                        <p>5. ChatGPT responderá automáticamente y volverá a escuchar</p>
+                        <p>6. <strong>Nota:</strong> Funciona mejor en Google Chrome</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab Navigation
+        function showTab(tabName) {
+            // Hide all tabs
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            // Show selected tab
+            const selectedTab = document.getElementById(tabName);
+            if (selectedTab) {
+                selectedTab.classList.add('active');
+            }
+            
+            // Update navigation active state
+            updateNavigationActiveState(tabName);
+        }
+
+        function updateNavigationActiveState(activeTab) {
+            // Remove active state from all nav buttons
+            const navButtons = document.querySelectorAll('nav button');
+            navButtons.forEach(btn => {
+                btn.classList.remove('text-quest-blue');
+                btn.classList.add('text-gray-600');
+            });
+            
+            // Add active state to current tab button
+            const activeButton = document.querySelector(`button[onclick="showTab('${activeTab}')"]`);
+            if (activeButton) {
+                activeButton.classList.remove('text-gray-600');
+                activeButton.classList.add('text-quest-blue');
+            }
+        }
+
+        function toggleMobileMenu() {
+            const mobileMenu = document.getElementById('mobileMenu');
+            mobileMenu.classList.toggle('hidden');
+        }
+
+        // Form Handling
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            // Handle login logic here
+            console.log('Login form submitted');
+        });
+
+        document.getElementById('signupForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            // Handle signup logic here
+            console.log('Signup form submitted');
+        });
+
+        // Password Toggle
+        function togglePasswordVisibility(inputId, buttonId) {
+            const input = document.getElementById(inputId);
+            const button = document.getElementById(buttonId);
+            const icon = button.querySelector('i');
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.className = 'fas fa-eye-slash';
+            } else {
+                input.type = 'password';
+                icon.className = 'fas fa-eye';
+            }
+        }
+
+        // YouTube Video Loading
+        function loadVideo() {
+            const videoUrl = document.getElementById('videoUrl').value;
+            if (!videoUrl) {
+                alert('Please enter a YouTube URL');
+                return;
+            }
+            
+            // Extract video ID from URL
+            const videoId = extractVideoId(videoUrl);
+            if (!videoId) {
+                alert('Invalid YouTube URL');
+                return;
+            }
+            
+            // Load video player
+            loadVideoPlayer(videoId);
+            
+            // Load subtitles
+            loadSubtitles(videoId);
+        }
+
+        function extractVideoId(url) {
+            const regex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+            const match = url.match(regex);
+            return match ? match[1] : null;
+        }
+
+        function loadVideoPlayer(videoId) {
+            const container = document.getElementById('videoContainer');
+            container.innerHTML = `
+                <iframe
+                    width="100%"
+                    height="100%"
+                    src="https://www.youtube.com/embed/${videoId}"
+                    frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen
+                ></iframe>
+            `;
+        }
+
+        function loadSubtitles(videoId) {
+            const container = document.getElementById('subtitlesContainer');
+            container.innerHTML = '<div class="text-center text-slate-500"><i data-lucide="loader" class="h-8 w-8 mx-auto animate-spin"></i><p>Loading subtitles...</p></div>';
+            
+            // Call API to get subtitles
+            fetch(`/api/subtitles?videoId=${videoId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        displaySubtitles(data.transcript);
+                    } else {
+                        container.innerHTML = '<div class="text-center text-red-500"><p>Error loading subtitles</p></div>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    container.innerHTML = '<div class="text-center text-red-500"><p>Error loading subtitles</p></div>';
+                });
+        }
+
+        function displaySubtitles(transcript) {
+            const container = document.getElementById('subtitlesContainer');
+            container.innerHTML = '';
+            
+            transcript.forEach((item, index) => {
+                const subtitleElement = document.createElement('div');
+                subtitleElement.className = 'mb-4 p-3 bg-white rounded-lg border border-slate-200 cursor-pointer hover:bg-slate-50 transition-colors';
+                subtitleElement.innerHTML = `
+                    <div class="flex justify-between items-start mb-2">
+                        <span class="text-sm text-slate-500">${formatTime(item.start)}</span>
+                        <span class="text-xs px-2 py-1 rounded-full ${getDifficultyColor(item.difficulty)}">${item.difficulty}</span>
+                    </div>
+                    <p class="text-slate-800 mb-2">${item.text}</p>
+                    <p class="text-sm text-slate-600 italic">${item.translation}</p>
+                `;
+                
+                subtitleElement.onclick = () => {
+                    // Jump to video time
+                    const iframe = document.querySelector('iframe');
+                    if (iframe) {
+                        const currentSrc = iframe.src;
+                        const newSrc = currentSrc.split('?')[0] + '?start=' + Math.floor(item.start) + '&autoplay=1';
+                        iframe.src = newSrc;
+                    }
+                };
+                
+                container.appendChild(subtitleElement);
+            });
+        }
+
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        function getDifficultyColor(difficulty) {
+            switch(difficulty) {
+                case 'beginner': return 'bg-green-100 text-green-800';
+                case 'intermediate': return 'bg-yellow-100 text-yellow-800';
+                case 'advanced'
